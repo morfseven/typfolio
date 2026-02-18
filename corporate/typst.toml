@@ -1,0 +1,17 @@
+[package]
+name = "typfolio-corporate"
+version = "0.1.0"
+entrypoint = "template/theme.typ"
+authors = ["morfseven"]
+license = "MIT"
+description = "Clean corporate presentation template for proposals and pitch decks."
+repository = "https://github.com/morfseven/typfolio"
+keywords = ["presentation", "slides", "corporate", "proposal", "pitch-deck"]
+categories = ["presentation"]
+compiler = "0.12.0"
+exclude = ["docs/*", "template/output.pdf", ".DS_Store"]
+
+[template]
+path = "template"
+entrypoint = "main.typ"
+thumbnail = "thumbnail.png"
