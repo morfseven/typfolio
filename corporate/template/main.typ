@@ -225,7 +225,7 @@
     headers: ("Category", "Current (AS-IS)", "After (TO-BE)"),
     highlight-col: 2,
     rows: (
-      ([*Item 1*], [Description of current state], [Improved state #tp-badge("Improved", color: tp-blue)]),
+      ([*Item 1*], [Description of current state], [Improved state]),
       ([*Item 2*], [Description of current state], [Improved state]),
       ([*Item 3*], [Description of current state], [Improved state]),
       ([*Item 4*], [Description of current state], [Improved state]),

@@ -121,8 +121,6 @@
         tp-section-badge(num),
         {
           text(weight: "bold", size: 1.4em, fill: tp-dark, title)
-          linebreak()
-          text(size: 0.7em, fill: tp-muted, weight: "medium", tracking: 0.5pt, upper(subtitle))
         },
       )
     },
@@ -423,57 +421,66 @@
   headers: (),
   rows: (),
   highlight-col: none,
+  col-widths: none,
 ) = {
   let col-count = headers.len()
+  let cols = if col-widths != none {
+    col-widths
+  } else {
+    // First column narrower (category label), rest equal
+    if col-count == 3 { (1.2fr, 1.8fr, 1.8fr) }
+    else { range(col-count).map(_ => 1fr) }
+  }
+
+  // Build all cells: header row first, then data rows
+  let header-cells = headers.enumerate().map(((i, h)) => {
+    let is-hl = highlight-col != none and i == highlight-col
+    table.cell(
+      fill: if is-hl { tp-blue } else { tp-dark },
+      text(fill: tp-white, weight: "bold", size: 0.85em, h),
+    )
+  })
+
+  let data-cells = rows.enumerate().map(((row-idx, row)) => {
+    let row-bg = if calc.rem(row-idx, 2) == 0 { tp-white } else { luma(248) }
+    row.enumerate().map(((i, cell)) => {
+      let is-hl = highlight-col != none and i == highlight-col
+      table.cell(
+        fill: row-bg,
+        {
+          set text(size: 0.82em)
+          if is-hl {
+            set text(fill: tp-blue, weight: "semibold")
+            cell
+          } else if i == 0 {
+            set text(fill: tp-dark, weight: "semibold")
+            cell
+          } else {
+            set text(fill: tp-body)
+            cell
+          }
+        },
+      )
+    })
+  }).flatten()
 
   block(
     width: 100%,
     radius: 8pt,
     clip: true,
     stroke: 1pt + tp-border,
-    {
-      // Header row
-      grid(
-        columns: range(col-count).map(_ => 1fr),
-        ..headers.enumerate().map(((i, h)) => {
-          let bg = if highlight-col != none and i == highlight-col { tp-blue } else { tp-dark }
-          block(
-            width: 100%,
-            fill: bg,
-            inset: (x: 1em, y: 0.8em),
-            text(fill: tp-white, weight: "bold", size: 0.85em, h),
-          )
-        })
-      )
-
-      // Data rows
-      for (row-idx, row) in rows.enumerate() {
-        let row-bg = if calc.rem(row-idx, 2) == 0 { tp-white } else { tp-surface }
-        grid(
-          columns: range(col-count).map(_ => 1fr),
-          ..row.enumerate().map(((i, cell)) => {
-            let bg = if highlight-col != none and i == highlight-col { tp-blue.lighten(95%) } else { row-bg }
-            block(
-              width: 100%,
-              fill: bg,
-              inset: (x: 1em, y: 0.6em),
-              {
-                set text(size: 0.8em, fill: tp-body)
-                if highlight-col != none and i == highlight-col {
-                  set text(fill: tp-blue, weight: "medium")
-                  cell
-                } else {
-                  cell
-                }
-              },
-            )
-          })
-        )
-        if row-idx < rows.len() - 1 {
-          line(length: 100%, stroke: 0.5pt + tp-border)
-        }
-      }
-    },
+    table(
+      columns: cols,
+      inset: (x: 1.2em, y: 0.9em),
+      stroke: (x, y) => {
+        // Vertical dividers between columns only (no outer border, handled by block)
+        if x > 0 and x < col-count { (left: 0.5pt + tp-border) }
+        // Horizontal dividers between data rows only
+        else if y > 1 { (top: 0.5pt + tp-border) }
+      },
+      ..header-cells,
+      ..data-cells,
+    ),
   )
 }
 
