@@ -1,0 +1,17 @@
+[package]
+name = "typfolio-report"
+version = "0.1.0"
+entrypoint = "template/theme.typ"
+authors = ["morfseven"]
+license = "MIT"
+description = "Clean A4 document and report template for technical documents and formal requests."
+repository = "https://github.com/morfseven/typfolio"
+keywords = ["report", "document", "a4", "corporate", "formal"]
+categories = ["report"]
+compiler = "0.12.0"
+exclude = ["docs/*", "template/output.pdf", ".DS_Store"]
+
+[template]
+path = "template"
+entrypoint = "main.typ"
+thumbnail = "thumbnail.png"
