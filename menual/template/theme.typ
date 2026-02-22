@@ -185,6 +185,210 @@
 }
 
 // =============================================================================
+// PAGE FUNCTIONS
+// =============================================================================
+
+/// Title slide — product title page
+#let title-slide(
+  title: none,
+  subtitle: none,
+  version: none,
+  logo: none,
+) = {
+  pagebreak(weak: true)
+  _slide-counter.step()
+
+  block(
+    width: 100%,
+    height: 100%,
+    fill: tp-white,
+    {
+      v(1fr)
+      align(center, {
+        if logo != none {
+          if type(logo) == content { logo }
+          else { image(logo, height: 3em) }
+          v(2em)
+        }
+        if title != none {
+          text(size: 2.8em, weight: "black", fill: tp-dark, title)
+          v(0.6em)
+        }
+        if subtitle != none {
+          text(size: 1.1em, fill: tp-body, subtitle)
+          v(2em)
+        }
+      })
+      v(1fr)
+      if version != none {
+        align(center, text(size: 0.8em, fill: tp-muted, version))
+        v(2em)
+      }
+    },
+  )
+}
+
+/// Table of contents slide — split layout with blue panel
+#let toc-slide(
+  title: "Contents",
+  items: (),
+) = {
+  pagebreak(weak: true)
+  _slide-counter.step()
+
+  block(
+    width: 100%,
+    height: 100%,
+    fill: tp-white,
+    {
+      grid(
+        columns: (2fr, 1fr),
+        rows: (100%,),
+        block(
+          width: 100%,
+          height: 100%,
+          inset: (x: 3em, y: 2.5em),
+          {
+            text(size: 1.8em, weight: "black", fill: tp-dark, title)
+            v(2em)
+            block(
+              inset: (left: 1em),
+              stroke: (left: 3pt + tp-blue),
+              {
+                for (i, item) in items.enumerate() {
+                  v(0.8em)
+                  grid(
+                    columns: (auto, 1fr),
+                    column-gutter: 8pt,
+                    align: (center, left),
+                    text(fill: tp-blue, weight: "bold")[▸],
+                    text(size: 1.1em, fill: tp-blue, weight: "medium", item),
+                  )
+                }
+                v(0.8em)
+              },
+            )
+          },
+        ),
+        block(width: 100%, height: 100%, fill: tp-blue),
+      )
+    },
+  )
+}
+
+/// Content slide — standard page with header
+#let content-slide(
+  section-label: "",
+  section-title: "",
+  body,
+) = {
+  pagebreak(weak: true)
+  _slide-counter.step()
+
+  block(
+    width: 100%,
+    height: 100%,
+    fill: tp-white,
+    {
+      _content-header(section-label, section-title)
+      block(
+        width: 100%,
+        inset: (x: 2.5em, top: 0.2em, bottom: 1em),
+        {
+          set text(fill: tp-body, size: tp-base-size)
+          body
+        },
+      )
+    },
+  )
+}
+
+/// FAQ slide — 2-column grid of Q&A items
+#let faq-slide(
+  section-label: "Troubleshooting",
+  section-title: "FAQ",
+  items: (),
+) = {
+  pagebreak(weak: true)
+  _slide-counter.step()
+
+  block(
+    width: 100%,
+    height: 100%,
+    fill: tp-white,
+    {
+      _content-header(section-label, section-title)
+      block(
+        width: 100%,
+        inset: (x: 3em, top: 1em),
+        {
+          let col-count = 2
+          let row-count = calc.ceil(items.len() / col-count)
+          for row-idx in range(row-count) {
+            grid(
+              columns: (1fr, 1fr),
+              column-gutter: 3em,
+              ..range(col-count).map(col-idx => {
+                let idx = row-idx * col-count + col-idx
+                if idx < items.len() {
+                  let item = items.at(idx)
+                  {
+                    text(weight: "bold", size: 1em, fill: tp-dark, item.at("q"))
+                    v(0.5em)
+                    let answers = item.at("answers", default: ())
+                    for answer in answers {
+                      tp-check-item[#text(size: 0.85em)[#answer]]
+                      v(0.2em)
+                    }
+                  }
+                }
+              }),
+            )
+            if row-idx < row-count - 1 { v(1.5em) }
+          }
+        },
+      )
+    },
+  )
+}
+
+/// Closing slide — thank you page
+#let closing-slide(
+  message: "Thank you.",
+  support-label: none,
+  support-items: (),
+) = {
+  pagebreak(weak: true)
+  _slide-counter.step()
+
+  block(
+    width: 100%,
+    height: 100%,
+    fill: tp-white,
+    {
+      v(1fr)
+      align(center, text(size: 2.4em, weight: "black", fill: tp-dark, message))
+      v(1fr)
+      if support-label != none or support-items.len() > 0 {
+        align(right, block(
+          inset: (right: 3em, bottom: 2em),
+          {
+            if support-label != none {
+              text(weight: "bold", size: 0.85em, fill: tp-dark, support-label)
+              v(0.3em)
+            }
+            for item in support-items {
+              text(size: 0.8em, fill: tp-body)[- #item]
+              v(0.15em)
+            }
+          },
+        ))
+      }
+    },
+  )
+}
+
+// =============================================================================
 // MANUAL INITIALIZER
 // =============================================================================
 
