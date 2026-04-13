@@ -1,12 +1,9 @@
-# Compiled output
-**/output.pdf
-
 # macOS
 .DS_Store
 
 # Typst
 *.pdf
-!**/thumbnail.png
+!**/output.pdf
 
 # Editor
 .vscode/

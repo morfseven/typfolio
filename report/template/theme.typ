@@ -258,6 +258,7 @@
   // Paragraph settings
   set par(
     leading: 0.8em,
+    spacing: 1.3em,
     justify: true,
   )
 
@@ -267,8 +268,7 @@
   // Heading styles
   show heading.where(level: 1): it => {
     set text(size: 14pt, weight: "bold", fill: tp-dark)
-    v(1.2em)
-    block(below: 0.8em)[
+    block(above: 2.4em, below: 1.4em)[
       #it
       #v(-0.5em)
       #line(length: 100%, stroke: 1.5pt + tp-blue)
@@ -277,12 +277,12 @@
 
   show heading.where(level: 2): it => {
     set text(size: 11pt, weight: "bold", fill: tp-body)
-    block(above: 1em, below: 0.6em)[#it]
+    block(above: 2.2em, below: 1em)[#it]
   }
 
   show heading.where(level: 3): it => {
     set text(size: 10pt, weight: "bold", fill: rgb("#444444"))
-    block(above: 0.8em, below: 0.5em)[#it]
+    block(above: 1.6em, below: 0.9em)[#it]
   }
 
   // Inline code style
